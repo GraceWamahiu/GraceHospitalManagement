@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from hospitalapp.models import Member, Message, Users
+from hospitalapp.models import Member, Message, Users, ImageModel
+from hospitalapp.forms import ImageUploadForm
 
 
 # Create your views here.
@@ -24,17 +25,13 @@ def register(request):
         member = Member(username=request.POST['username'], email=request.POST['email'],
                         password=request.POST['password'])
         member.save()
-        return redirect('/register')
+        return redirect('/login')
     else:
         return render(request, 'register.html')
 
 
 def login(request):
     return render(request, 'login.html')
-
-
-def upload(request):
-    return render(request, 'upload.html')
 
 
 def detail(request):
@@ -45,3 +42,38 @@ def detail(request):
 def user(request):
     user = Users.objects.all()
     return render(request, 'users.html', {'users': user})
+
+
+def adminhome(request):
+    if request.method == 'POST':
+        if Member.objects.filter(username=request.POST['username'],
+                                 password=request.POST['password']).exists():
+            member = Member.objects.get(username=request.POST['username']
+                                        , password=request.POST['password'])
+            return render(request, 'adminhome.html', {'member': member})
+        else:
+            return render(request, 'login.html')
+    else:
+        return render(request, 'login.html')
+
+
+def upload_image(request):
+    if request.method == 'POST':
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('/showimages')
+    else:
+        form = ImageUploadForm()
+    return render(request, 'upload.html', {'form': form})
+
+
+def showimages(request):
+    images = ImageModel.objects.all()
+    return render(request, 'showimages.html', {'images': images})
+
+
+def imagedelete(request, id):
+    image = ImageModel.objects.get(id=id)
+    image.delete()
+    return redirect('/showimages')

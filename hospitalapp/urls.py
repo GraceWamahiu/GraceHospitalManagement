@@ -6,12 +6,16 @@ from hospitalapp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('innerpage/', views.index, name='inner'),
+    path('innerpage/', views.inner, name='inner'),
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'),
-    path('upload/', views.upload, name='upload'),
     path('details/', views.detail, name='detail'),
-    path('users/', views.user, name='user')
+    path('users/', views.user, name='user'),
+    path('adminhome/', views.adminhome, name='adminhome'),
+    path('uploadimage/', views.upload_image, name='upload'),
+    path('showimages/', views.showimages, name='image'),
+    path('imagedelete/<int:id>', views.imagedelete),
+
 
 
 ]
